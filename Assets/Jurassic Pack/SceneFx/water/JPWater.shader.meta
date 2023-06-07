@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 987963564414e6b42837734c26aab22a
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _WaterTex: {instanceID: 0}
+  - _EdgeTex: {instanceID: 0}
+  - _ReflectionRT: {instanceID: 0}
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

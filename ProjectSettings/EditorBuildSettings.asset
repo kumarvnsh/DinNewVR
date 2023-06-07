@@ -1,0 +1,14 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Jurassic Pack/Scene/DinoIsland.unity
+    guid: 2d31b9c851f3d95448f1c1fa97cb5837
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: d618b4806bca7dc4596245524d61501a, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 289f58382a8f2f846a336697934b8eda, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 4b6cc70f1c743a64c98e371fa414c382, type: 2}
