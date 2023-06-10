@@ -27,93 +27,93 @@ public class JPWater : MonoBehaviour
 	public AudioClip splashSnd;
 	private float count=0;
 
-  private void Start()
-  {
-		startFogDensity=RenderSettings.fogDensity;
-		startFogColor=RenderSettings.fogColor;
-    startLightDir=directionalLight.transform.forward;
-  }
+  // private void Start()
+  // {
+		// startFogDensity=RenderSettings.fogDensity;
+		// startFogColor=RenderSettings.fogColor;
+  //   startLightDir=directionalLight.transform.forward;
+  // }
 
-  private void OnWillRenderObject()
-  {
-		if(onRend | !Camera.current | !reflectionCamera | !waterMat) return;
-    if(reflectionRt==null | (reflectionRt&& reflectionRt.width!=resolution))
-		{ reflectionRt=RenderTexture.GetTemporary(resolution, resolution, 24); }
-		Camera cam=Camera.current;
-
-		Vector3 n=transform.up, p=transform.position; float l=-Vector3.Dot(n, p);
-		Matrix4x4 m=new Matrix4x4
-		{
-			m00=1-2*n.x*n.x, m01=-2*n.x*n.y,  m02=-2*n.x*n.z,  m03=-2*l*n.x,
-			m10=-2*n.x*n.y,	 m11=1-2*n.y*n.y, m12=-2*n.y*n.z,  m13=-2*l*n.y,
-			m20=-2*n.x*n.z,  m21=-2*n.y*n.z,  m22=1-2*n.z*n.z, m23=-2*l*n.z,
-			m30=0, m31=0, m32=0, m33=1
-		};
-
-		//Set Cam
-		reflectionCamera.enabled=false;
-		Vector3 n2 =-cam.worldToCameraMatrix.MultiplyVector(n).normalized;
-		Vector4 clip=new Vector4(n2.x, n2.y, n2.z, -Vector3.Dot(cam.worldToCameraMatrix.MultiplyPoint((p+n)*0.9f), n2));
-		reflectionCamera.projectionMatrix=cam.CalculateObliqueMatrix(clip);
-		reflectionCamera.worldToCameraMatrix=cam.worldToCameraMatrix*m;
-			
-    reflectionCamera.clearFlags=cam.clearFlags;
-    reflectionCamera.backgroundColor=cam.backgroundColor;
-    reflectionCamera.farClipPlane=cam.farClipPlane;
-    reflectionCamera.nearClipPlane=cam.nearClipPlane;
-    reflectionCamera.orthographic=cam.orthographic;
-    reflectionCamera.fieldOfView=cam.fieldOfView;
-    reflectionCamera.aspect=cam.aspect;
-    reflectionCamera.orthographicSize=cam.orthographicSize;
-		reflectionCamera.targetTexture=reflectionRt;
-
-		reflectionCamera.transform.SetPositionAndRotation(cam.transform.position, cam.transform.rotation);
-    if(reflectionCamera.rect.size!=Vector2.one) return;
-		GL.invertCulling=true; reflectionCamera.Render(); GL.invertCulling=false;
-    
-		waterMat.SetTexture("_ReflectionRT", reflectionRt);
-		onRend=false;
-  }
+  // private void OnWillRenderObject()
+  // {
+		// if(onRend | !Camera.current | !reflectionCamera | !waterMat) return;
+  //   if(reflectionRt==null | (reflectionRt&& reflectionRt.width!=resolution))
+		// { reflectionRt=RenderTexture.GetTemporary(resolution, resolution, 24); }
+		// Camera cam=Camera.current;
+  //
+		// Vector3 n=transform.up, p=transform.position; float l=-Vector3.Dot(n, p);
+		// Matrix4x4 m=new Matrix4x4
+		// {
+		// 	m00=1-2*n.x*n.x, m01=-2*n.x*n.y,  m02=-2*n.x*n.z,  m03=-2*l*n.x,
+		// 	m10=-2*n.x*n.y,	 m11=1-2*n.y*n.y, m12=-2*n.y*n.z,  m13=-2*l*n.y,
+		// 	m20=-2*n.x*n.z,  m21=-2*n.y*n.z,  m22=1-2*n.z*n.z, m23=-2*l*n.z,
+		// 	m30=0, m31=0, m32=0, m33=1
+		// };
+  //
+		// //Set Cam
+		// reflectionCamera.enabled=false;
+		// Vector3 n2 =-cam.worldToCameraMatrix.MultiplyVector(n).normalized;
+		// Vector4 clip=new Vector4(n2.x, n2.y, n2.z, -Vector3.Dot(cam.worldToCameraMatrix.MultiplyPoint((p+n)*0.9f), n2));
+		// reflectionCamera.projectionMatrix=cam.CalculateObliqueMatrix(clip);
+		// reflectionCamera.worldToCameraMatrix=cam.worldToCameraMatrix*m;
+		// 	
+  //   reflectionCamera.clearFlags=cam.clearFlags;
+  //   reflectionCamera.backgroundColor=cam.backgroundColor;
+  //   reflectionCamera.farClipPlane=cam.farClipPlane;
+  //   reflectionCamera.nearClipPlane=cam.nearClipPlane;
+  //   reflectionCamera.orthographic=cam.orthographic;
+  //   reflectionCamera.fieldOfView=cam.fieldOfView;
+  //   reflectionCamera.aspect=cam.aspect;
+  //   reflectionCamera.orthographicSize=cam.orthographicSize;
+		// reflectionCamera.targetTexture=reflectionRt;
+  //
+		// reflectionCamera.transform.SetPositionAndRotation(cam.transform.position, cam.transform.rotation);
+  //   if(reflectionCamera.rect.size!=Vector2.one) return;
+		// GL.invertCulling=true; reflectionCamera.Render(); GL.invertCulling=false;
+  //   
+		// waterMat.SetTexture("_ReflectionRT", reflectionRt);
+		// onRend=false;
+  // }
 
 	//UNDERWATER EFFECT
-	private void FixedUpdate ()
-	{
-		Camera cam=Camera.current;
-		if(!Application.isPlaying | !useUnderwaterFx | !cam) return;
-
-    //Get screen water altitude
-    float d_l=cam.ScreenToWorldPoint(new Vector3(0, 0, cam.nearClipPlane)).y;
-		float u_l=cam.ScreenToWorldPoint(new Vector3(0, Screen.height, cam.nearClipPlane)).y;
-		float d_r=cam.ScreenToWorldPoint(new Vector3(Screen.width, 0, cam.nearClipPlane)).y;
-		float u_r=cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, cam.nearClipPlane)).y;
-		screenWaterY=Mathf.Clamp( (Mathf.Min(d_l, d_r)-transform.position.y) / (Mathf.Min(d_l, d_r) - Mathf.Min(u_l, u_r)) , -16.0f, 16.0f);
-    //Get water material color
-    //Color32 col=Color32.Lerp(waterMat.GetColor("_ReefCol"), waterMat.GetColor("_Col")*1.5f, screenWaterY/4f);
-    //Fog color & density
-   // RenderSettings.fogColor=Color32.Lerp(startFogColor, col, Mathf.Clamp01(screenWaterY));
-    RenderSettings.fogDensity=Mathf.Lerp(startFogDensity, underwaterDensity, Mathf.Clamp01(screenWaterY));
-    cam.backgroundColor=RenderSettings.fogColor;
-		if(screenWaterY>0.5f)
-		{ 
-      if(!underwaterSnd.isPlaying)
-      {
-        underwaterSnd.Play(); // play underwater sound
-        sunflare.enabled=false; //Disable sun flare
-        cam.clearFlags=CameraClearFlags.SolidColor; // Set CameraClearFlags
-			  directionalLight.transform.forward=-Vector3.up; // Set light direction
-      }
-      if(lightCookie.Length>0)
-      directionalLight.cookie=lightCookie[Mathf.FloorToInt((Time.fixedTime*16)%lightCookie.Length)]; //Animate light cookie
-		}
-    else if(underwaterSnd.isPlaying)
-    {
-      underwaterSnd.Stop(); //Stop underwater sound 
-      sunflare.enabled=true; //Enable sun flare
-      cam.clearFlags=CameraClearFlags.Skybox;	// Reset CameraClearFlags
-      directionalLight.transform.forward=startLightDir; // Reset light direction
-      directionalLight.cookie=null; // Remove light cookie
-    }
-	}
+	// private void FixedUpdate ()
+	// {
+	// 	Camera cam=Camera.current;
+	// 	if(!Application.isPlaying | !useUnderwaterFx | !cam) return;
+ //
+ //    //Get screen water altitude
+ //    float d_l=cam.ScreenToWorldPoint(new Vector3(0, 0, cam.nearClipPlane)).y;
+	// 	float u_l=cam.ScreenToWorldPoint(new Vector3(0, Screen.height, cam.nearClipPlane)).y;
+	// 	float d_r=cam.ScreenToWorldPoint(new Vector3(Screen.width, 0, cam.nearClipPlane)).y;
+	// 	float u_r=cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, cam.nearClipPlane)).y;
+	// 	screenWaterY=Mathf.Clamp( (Mathf.Min(d_l, d_r)-transform.position.y) / (Mathf.Min(d_l, d_r) - Mathf.Min(u_l, u_r)) , -16.0f, 16.0f);
+ //    //Get water material color
+ //    //Color32 col=Color32.Lerp(waterMat.GetColor("_ReefCol"), waterMat.GetColor("_Col")*1.5f, screenWaterY/4f);
+ //    //Fog color & density
+ //   // RenderSettings.fogColor=Color32.Lerp(startFogColor, col, Mathf.Clamp01(screenWaterY));
+ //    RenderSettings.fogDensity=Mathf.Lerp(startFogDensity, underwaterDensity, Mathf.Clamp01(screenWaterY));
+ //    cam.backgroundColor=RenderSettings.fogColor;
+	// 	if(screenWaterY>0.5f)
+	// 	{ 
+ //      if(!underwaterSnd.isPlaying)
+ //      {
+ //        underwaterSnd.Play(); // play underwater sound
+ //        sunflare.enabled=false; //Disable sun flare
+ //        cam.clearFlags=CameraClearFlags.SolidColor; // Set CameraClearFlags
+	// 		  directionalLight.transform.forward=-Vector3.up; // Set light direction
+ //      }
+ //      if(lightCookie.Length>0)
+ //      directionalLight.cookie=lightCookie[Mathf.FloorToInt((Time.fixedTime*16)%lightCookie.Length)]; //Animate light cookie
+	// 	}
+ //    else if(underwaterSnd.isPlaying)
+ //    {
+ //      underwaterSnd.Stop(); //Stop underwater sound 
+ //      sunflare.enabled=true; //Enable sun flare
+ //      cam.clearFlags=CameraClearFlags.Skybox;	// Reset CameraClearFlags
+ //      directionalLight.transform.forward=startLightDir; // Reset light direction
+ //      directionalLight.cookie=null; // Remove light cookie
+ //    }
+	// }
 
 
 	//PARTICLES EFFECT

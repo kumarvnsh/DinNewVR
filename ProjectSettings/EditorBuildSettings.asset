@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Jurassic Pack/Scene/DinoIsland.unity
     guid: 2d31b9c851f3d95448f1c1fa97cb5837
   m_configObjects:
-    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: d618b4806bca7dc4596245524d61501a, type: 2}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 289f58382a8f2f846a336697934b8eda, type: 2}
-    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 4b6cc70f1c743a64c98e371fa414c382, type: 2}
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 64bd76d34ea3c494fbb76fed4ee5b66b,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: d5961adea0f07154191f39a12883837c,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 4b6cc70f1c743a64c98e371fa414c382,
+      type: 2}

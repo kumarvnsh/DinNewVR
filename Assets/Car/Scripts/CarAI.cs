@@ -63,21 +63,21 @@ public class CarAI : MonoBehaviour
         wheelsEntity.rotation = Quaternion.Lerp(wheelsEntity.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Dino"))
-        {
-            // Object with the tag "creature" entered the trigger
-            isCreatureDetected = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Dino"))
-        {
-            // Object with the tag "creature" exited the trigger
-            isCreatureDetected = false;
-        }
-    }
+    // private void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.CompareTag("Dino"))
+    //     {
+    //         // Object with the tag "creature" entered the trigger
+    //         isCreatureDetected = true;
+    //     }
+    // }
+    //
+    // private void OnTriggerExit(Collider other)
+    // {
+    //     if (other.CompareTag("Dino"))
+    //     {
+    //         // Object with the tag "creature" exited the trigger
+    //         isCreatureDetected = false;
+    //     }
+    // }
 }
